@@ -1,11 +1,14 @@
 <?php
 
+use App\Http\Controllers\AdminController;
 use App\Http\Controllers\CategoryCourseController;
 use App\Http\Controllers\CourseTraningController;
 use App\Http\Controllers\EpisodeController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\StartController;
+use App\Http\Controllers\TeacherController;
 use App\Http\Controllers\TestController;
+use Faker\Guesser\Name;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,6 +21,15 @@ use Illuminate\Support\Facades\Route;
 | be assigned to the "web" middleware group. Make something great!
 |
 */
+Route::get('admin/index',[AdminController::class,'index'])->name('admin.index');
+Route::get('admin/add_teacher',[AdminController::class,'show'])->name('admin.add_teacher');
+Route::post('admin/store/teacher',[AdminController::class,'store'])->name('admin.store_teacher');
+Route::get('admin/display/teacher',[AdminController::class,'display'])->name('admin.display_teacher');
+Route::put('admin/destroy/teache/{teacher}',[AdminController::class,'destroy'])->name('admin.destroy_teacher');
+Route::put('admin/block/teache/{teacher}',[AdminController::class,'block'])->name('admin.block_teacher');
+// Route::view('admin/add_teacher','admin/pages/add_teacher')->name('admin.add_teacher');
+ 
+// Route::view('index/add_teacher','teacher.pages.add_teacher')->name('index/add_teacher');
 Route::get('/dc', function () {
     return view('dashboard');
 });

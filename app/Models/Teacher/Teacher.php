@@ -25,6 +25,7 @@ class Teacher extends Authenticatable
         'address',
         'email',
         'password',
+        'is_aproved',
         // 'certificate_img'
         // 'certificate_img' => 'required|image|mimes:jpeg,jpg,png,gif|max:200',
         // 'certificate_img' => 'required|image|mimes:jpg,jpeg,png,gif|max:200',

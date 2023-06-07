@@ -4,71 +4,76 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
-use Illuminate\Foundation\Auth\AuthenticatesUsers;
-use Illuminate\Support\Facades\Auth;
+use App\Http\Requests\TeacherStoreRequest;
+use App\Models\Teacher\Teacher;
+use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Storage;
 
 class AdminController extends Controller
 {
     // use AuthenticatesUsers;
-
-    // protected $redirectTo = '/backend'; //Redirect after authenticate
-
-    // public function __construct()
-    // {
-    //     $this->middleware('guest:admin')->except('logout'); //Notice this middleware
-    // }
-
-    // public function showLoginForm() //Go web.php then you will find this route
-    // {
-    //     return view('admin.login');
-    // }
-
-    // public function login(Request $request) //Go web.php then you will find this route
-    // {
-    //     $this->validateLogin($request);
-
-    //     if ($this->attemptLogin($request) ) {
-    //         return $this->sendLoginResponse($request);
-    //     }
-
-    //     return $this->sendFailedLoginResponse($request);
-    // }
-
-    // public function logout(Request $request)
-    // {
-    //     $this->guard('admin')->logout();
-
-    //     $request->session()->invalidate();
-
-    //     return redirect('/login');
-    // }
-
-    // protected function guard() // And now finally this is our custom guard name
-    // {
-    //     return Auth::guard('admin');
-    // }
-    function check(Request $request)
+    public function index()
     {
-        $request->validate([
-            'email' => 'required|email|exists:admins,email',
-            'password' => 'required|min:5|max:30'
-        ], [
-            'email.exists' => 'This email is not exists in admins table'
-        ]);
+        return view('admin.pages.index');
+    } 
 
-        $creds = $request->only('email', 'password');
-
-        if (Auth::guard('admin')->attempt($creds)) {
-            return redirect()->route('admin.home');
-        } else {
-            return redirect()->route('admin.login')->with('fail', 'Incorrect credentials');
-        }
+    public function show()
+    {
+        return view('admin.pages.add_teacher');
     }
 
-    function logout()
+    public function store(Request $request)
     {
-        //Request $request
-        Auth::guard('admin')->logout();
-        return redirect('/');
+        // dd($request);
+        $img = null;
+        if ($request->hasFile('img')) {
+            $img = $request->file('img')->store('public/images');
+            $img = Storage::url($img);
+        }
+        
+        $certificateImg = null;
+        if ($request->hasFile('certificate_img')) {
+            $certificateImg = $request->file('certificate_img')->store('public/images');
+            $certificateImg = Storage::url($certificateImg);
+        }
+        // dd($request);
+        Teacher::create([
+            'name' => $request->input('name'),
+            'user_Name' => $request->input('user_name'),
+            'language' => $request->input('language'),
+            'address' => $request->input('address'),
+            'gender' => $request->input('gender'),
+            'dob' => $request->input('dob'),
+            'phone' => $request->input('phone'),
+            'email' => $request->input('email'),
+            'password' => Hash::make($request->input('password')),
+           
+        ]);
+
+        return redirect()->route('admin.display_teacher')->with('success', 'Your action was successful!');
+
+//         @if (session('success'))
+//   <div class="alert alert-success">
+//     {{ session('success') }}
+//   </div>
+// @endif
+    }
+    public function display()
+    {
+        $teachers = Teacher::all();
+        return view('admin.pages.show_teacher',compact('teachers'));
+    }
+
+    public function block(Teacher $teacher)
+    {
+        $teacher->is_aproved=0;
+        return redirect()->back()->with('success', 'Teacher has been blocked.');
+
+    }
+    public function destroy(Teacher $teacher)
+    {
+        $teacher->delete();
+        return redirect()->back()->with('success', 'Teacher has been deleted.');
+
     }
 }

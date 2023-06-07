@@ -139,7 +139,16 @@
 </body>
 </html>
  --}}
-{{-- @dd($episodes ,$course ); --}}
+{{-- @dd($episodes ); --}}
+
+@php
+    $first = $episodes;
+    $check = 0 ;
+@endphp
+
+{{-- @dd(  $first[0]->link ); --}}
+
+
 <!DOCTYPE html>
 <html lang="en">
 
@@ -156,12 +165,9 @@
     <link rel="stylesheet" href="{{ asset('/css/styleall.css')}}">
     <link rel="stylesheet" href="{{ asset('/css/Header.css')}}">
     <link rel="stylesheet" href="{{ asset('css/dtc.css')}}">
-
-
 </head>
 
 <body>
-
     {{-- ***** Header Area Start ***** --}}
     <header class="header-area header-sticky">
         <div class="container">
@@ -231,9 +237,14 @@
     <div class="row">
         <div class="play-video">
 
-            <video controls autoplay>
-                <source src="{{ asset('') }}" type="video/mp4">
-            </video>
+            @if( !$episodes->isEmpty() )
+                 @if( !$first->isEmpty() &&  $check == 0 )
+                    <video controls autoplay>
+                        <source src="{{ asset('storage/'.$first[0]->link) }}" type="video/mp4">
+                    </video>
+                 @else
+                 <h1>fffffffffffff</h1>
+                @endif
 
             <div class="vid-info-o">
                 <h2>Video Title</h2>
@@ -243,6 +254,7 @@
                 <p>Rating: 4.5 / 5</p>
                 <p>Number of Buyers: 10000</p>
                 <hr>
+        
                 <div class="episodes">
                   <h3>Episodes</h3>
                 </div>
@@ -251,15 +263,17 @@
                 <div>
                     <h3>{{$teacher->name}}</h3>
                     <p>{{$teacher->address}}</p>
-                    <p>{{$teacher->phone}}</p>
+                    <p>{{$teacher->pphone}}</p>
                     <p>{{$teacher->language}}</p>
-                    <p>{{$teacher->email}}</p>
+                    <p>{{$teacher->email}}</p>  
                 </div>
             </div>
             </div>
                 <div>   
                 <img src="{{ asset($teacher->img)}}" alt="teacher" height="400" width="100">
                 </div>
+
+           
             {{-- <div class="owner">
                 <img src="{{$teacher->name}}" alt="teacher">
                 <div>
@@ -275,7 +289,9 @@
         <div class="right-sidebar">
             @foreach ($episodes as $episode)
             <div class="side-video-list">
-                <a href="" class="small-tumb"><img src="{{ asset( 'storage/'.$episode->img) }}" >
+                <a class="small-tumb" href= "{{route('episodes.teacher.array' , ['id_episode' => $episode->id ,'id_teacher' => $teacher->id  , 'id_courase' => $course->id ] ) }}" > 
+                {{-- <a class="small-tumb" href= "{{route('episode.show' ,['id' => 4 , 'dd'=> 6] ) }}" >  --}}
+                <img src="{{ asset( 'storage/'.$episode->img) }}">
                 <div class="vid-info">
                     <h2>{{$episode->title}}</h2>
                     <p>{{$episode->description}}</p>
@@ -287,13 +303,17 @@
             </div>
             @endforeach                     
         </div>
+        @else
+               <div class="container">
+                    No Vedio Found Yet ???
+               </div>
+            @endif
     </div>
 </div>
-
     <footer>
         <div class="container">
             <div class="col-lg-12">
-                <p>Copyright © 2036 moufeed Organization. All rights reserved. &nbsp;&nbsp;&nbsp; Design: moufeed </p>
+                <p>Copyright © 2036 moufeed Organization.All rights reserved. &nbsp;&nbsp;&nbsp; Design: moufeed </p>
             </div>
         </div>
     </footer>

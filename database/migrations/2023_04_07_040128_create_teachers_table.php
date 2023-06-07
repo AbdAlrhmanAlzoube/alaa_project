@@ -24,6 +24,7 @@ return new class extends Migration
             $table->string('password');
             $table->string('img')->nullable();
             $table->string('certificate_img')->nullable();
+            $table->boolean('is_aproved')->default(0);
             $table->rememberToken();
             $table->timestamps();
         });
